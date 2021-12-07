@@ -10,13 +10,13 @@ import { i18nRender } from '@/locales'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
+const allowList = ['login', 'register', 'registerResult'] // no redirect allowList
 const loginRoutePath = '/user/login'
 const defaultRoutePath = '/dashboard/workplace'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
-  to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`))
+  to.meta && typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`)
   /* has token */
   if (storage.get(ACCESS_TOKEN)) {
     if (to.path === loginRoutePath) {
@@ -34,7 +34,10 @@ router.beforeEach((to, from, next) => {
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
-              router.addRoutes(store.getters.addRouters)
+              // VueRouter@3.5.0+ New API
+              store.getters.addRouters.forEach(r => {
+                router.addRoute(r)
+              })
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
@@ -61,8 +64,8 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if (whiteList.includes(to.name)) {
-      // 在免登录白名单，直接进入
+    if (allowList.includes(to.name)) {
+      // 在免登录名单，直接进入
       next()
     } else {
       next({ path: loginRoutePath, query: { redirect: to.fullPath } })

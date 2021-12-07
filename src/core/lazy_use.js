@@ -43,6 +43,7 @@ import {
   Result,
   Statistic,
   Descriptions,
+  Space,
   message,
   notification
 } from 'ant-design-vue'
@@ -53,7 +54,7 @@ import VueCropper from 'vue-cropper'
 import Dialog from '@/components/Dialog'
 import MultiTab from '@/components/MultiTab'
 import PageLoading from '@/components/PageLoading'
-import PermissionHelper from '@/utils/helper/permission'
+import PermissionHelper from '@/core/permission/permission'
 import './directives/action'
 
 Vue.use(ConfigProvider)
@@ -97,6 +98,7 @@ Vue.use(PageHeader)
 Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
+Vue.use(Space)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
